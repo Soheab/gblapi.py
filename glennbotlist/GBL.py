@@ -99,14 +99,15 @@ class GBL:
 
         return Bot(data=data)
 
-    async def fetch_bot_votes(self):
+    async def fetch_bot_votes(self, bot_id: int = None):
         """This function is a coroutine.
         
         Requires authorization
 
         Parameters
         ----------
-        None
+        bot_id: Optional[`int`]
+            Bot to get info on
 
         Returns
         -------
@@ -117,11 +118,16 @@ class GBL:
         ------
         glennbotlist.Not200
             Http status code of the request was not 200
+
         """
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        data = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        bot_id = self.bot.user.id
+        if bot_id is not None:
+            bot_id = bot_id
+
+        data = await self.request("GET", url=f"bot/{bot_id}/votes", headers={"authorization": self.token})
 
         return data
 
@@ -147,7 +153,7 @@ class GBL:
 
         return User(data=data)
 
-    async def fetch_has_voted(self, user_id: int):
+    async def fetch_has_voted(self, user_id: int, bot_id: int = Noone):
         """This function is a coroutine.
 
         Requires authorization
@@ -156,6 +162,9 @@ class GBL:
         ----------
         user_id: `int`
             ID of the user to get whether they have voted
+
+        bot_id: Optional[`int`]
+            Bot to get info on
 
         Returns
         ------
@@ -170,19 +179,24 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        bot_id = self.bot.user.id
+        if bot_id is not None:
+            bot_id = bot_id
+
+        resp = await self.request("GET", url=f"bot/{bot_id}/votes", headers={"authorization": self.token})
 
         current = resp['current_votes']['current_users']
         return str(user_id) in current
 
-    async def fetch_vote_count(self):
+    async def fetch_vote_count(self, bot_id: int = None):
         """This function is a coroutine.
         
         Requires authorization
 
         Parameters
         ----------
-        None
+        bot_id: Optional[`int`]
+            Bot to get info on
 
         Returns
         -------
@@ -198,7 +212,11 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        bot_id = self.bot.user.id
+        if bot_id is not None:
+            bot_id = bot_id
+
+        resp = await self.request("GET", url=f"bot/{bot_id}/votes", headers={"authorization": self.token})
 
         a = resp['current_votes']['alltime']
         m = len(resp['current_votes']['monthly'])
