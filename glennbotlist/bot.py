@@ -71,6 +71,7 @@ class Bot:
     rates: `list`
         List of the bot's rates
     """
+
     def __init__(self, data):
         self.name = data["name"]
         self.id = int(data["id"])

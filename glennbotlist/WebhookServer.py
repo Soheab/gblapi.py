@@ -1,14 +1,14 @@
+import socket
+
 from aiohttp import web
-import discord
-import asyncio
-import socket    
+
 
 class WebhookServer:
-    def __init__(self, bot, secret = None, port: int = 8000, callback: str = "webhook"):
+    def __init__(self, bot, secret=None, port: int = 8000, callback: str = "webhook"):
         self.bot = bot
         self.secret = secret
         self.port = port
-        self.app = web.Application(loop=bot.loop)
+        self.app = web.Application(loop = bot.loop)
         self.app.add_routes([web.post(f'/{callback}', self.handle_webhook)])
         self.webtask = self.bot.loop.create_task(self.run_server())
 
@@ -34,4 +34,4 @@ class WebhookServer:
         if x is False:
             return
         print(self.bot.dispatch("glenn_vote", data))
-        return web.Response(status=200)
+        return web.Response(status = 200)

@@ -1,6 +1,6 @@
-import json
 import aiohttp
 import discord
+
 from glennbotlist import errors
 from glennbotlist.bot import Bot
 from glennbotlist.user import User
@@ -22,9 +22,10 @@ class GBL:
         Whether to have the glennbotlist client log for certain methods
     """
 
-    def __init__(self, bot, token: str = None, logging: bool = False):
+    def __init__(self, bot, token: str = None, bot_id: int = None, logging: bool = False):
         self.bot = bot
         self.token = token
+        self.bot_id = bot_id
         self.logging = logging
         self.base = "https://glennbotlist.xyz/api/"
         self.session = aiohttp.ClientSession()
@@ -99,6 +100,7 @@ class GBL:
         ------
         None
         """
+
         data = await self.request("GET", url = f"bot/{bot_id}/")
 
         return Bot(data = data)
@@ -125,7 +127,11 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        data = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
+        bot_id = self.bot.user.id
+        if self.bot_id is not None:
+            bot_id = self.bot_id
+
+        data = await self.request("GET", url = f"bot/{bot_id}/votes", headers = {"authorization": self.token})
 
         return data
 
@@ -174,7 +180,11 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
+        bot_id = self.bot.user.id
+        if self.bot_id is not None:
+            bot_id = self.bot_id
+
+        resp = await self.request("GET", url = f"bot/{bot_id}/votes", headers = {"authorization": self.token})
 
         current = resp['current_votes']['current_users']
         return str(user_id) in current
@@ -202,7 +212,11 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
+        bot_id = self.bot.user.id
+        if self.bot_id is not None:
+            bot_id = self.bot_id
+
+        resp = await self.request("GET", url = f"bot/{bot_id}/votes", headers = {"authorization": self.token})
 
         a = resp['current_votes']['alltime']
         m = len(resp['current_votes']['monthly'])

@@ -44,6 +44,7 @@ class User:
     total_karma: `int`
         Total amount of karma the users collected
     """
+
     def __init__(self, data):
         self.id = int(data["id"])
         self.name = data["username"]
