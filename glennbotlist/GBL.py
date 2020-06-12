@@ -5,6 +5,7 @@ from glennbotlist import errors
 from glennbotlist.bot import Bot
 from glennbotlist.user import User
 
+
 class GBL:
     """
     API client for Glenn Bot List in Python
@@ -35,7 +36,7 @@ class GBL:
         ---------
         method: `str`
             The request method to use
-        
+
         url: `str`
             The GBL path url
 
@@ -45,9 +46,9 @@ class GBL:
         data: Optional[`dict`]
             Data to pass to the request
         """
-        async with self.session.request(method=method, url=self.base + url, headers=headers, data=data) as r:
+        async with self.session.request(method = method, url = self.base + url, headers = headers, data = data) as r:
             resp = await r.json()
-        
+
         if resp["code"] != 200:
             raise errors.HTTPException(f"An error occurred (HTTP Code {resp['code']})")
 
@@ -73,10 +74,13 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        await self.request("POST", f"bot/{self.bot.user.id}/stats", data={"serverCount": len(self.bot.guilds), "shardCount": self.bot.shard_count or 0}, headers={"authorization": self.token})
+        await self.request("POST", f"bot/{self.bot.user.id}/stats",
+                           data = {"serverCount": len(self.bot.guilds), "shardCount": self.bot.shard_count or 0},
+                           headers = {"authorization": self.token})
 
         if self.logging:
-            print(f"Your guild count of {len(self.bot.guilds)} and shard count of {self.bot.shard_count} was posted successfully")
+            print(
+                f"Your guild count of {len(self.bot.guilds)} and shard count of {self.bot.shard_count} was posted successfully")
 
     async def fetch_bot_stats(self, bot_id):
         """This function is a coroutine.
@@ -90,18 +94,18 @@ class GBL:
         -------
         glennbotlist.Bot
             A Bot class
-            
+
         Raises
         ------
         None
         """
-        data = await self.request("GET", url=f"bot/{bot_id}/")
+        data = await self.request("GET", url = f"bot/{bot_id}/")
 
-        return Bot(data=data)
+        return Bot(data = data)
 
     async def fetch_bot_votes(self):
         """This function is a coroutine.
-        
+
         Requires authorization
 
         Parameters
@@ -121,7 +125,7 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        data = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        data = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
 
         return data
 
@@ -143,9 +147,9 @@ class GBL:
         glennbotlist.Not200
             This is usually raised when the user is not registered on the list
         """
-        data = await self.request("GET", url=f"user/{user_id}")
+        data = await self.request("GET", url = f"user/{user_id}")
 
-        return User(data=data)
+        return User(data = data)
 
     async def fetch_has_voted(self, user_id: int):
         """This function is a coroutine.
@@ -170,14 +174,14 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        resp = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
 
         current = resp['current_votes']['current_users']
         return str(user_id) in current
 
     async def fetch_vote_count(self):
         """This function is a coroutine.
-        
+
         Requires authorization
 
         Parameters
@@ -198,7 +202,7 @@ class GBL:
         if self.token is None:
             raise errors.NoKey("No API Key was passed")
 
-        resp = await self.request("GET", url=f"bot/{self.bot.user.id}/votes", headers={"authorization": self.token})
+        resp = await self.request("GET", url = f"bot/{self.bot.user.id}/votes", headers = {"authorization": self.token})
 
         a = resp['current_votes']['alltime']
         m = len(resp['current_votes']['monthly'])
