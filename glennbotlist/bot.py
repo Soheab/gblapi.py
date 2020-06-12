@@ -79,7 +79,6 @@ class Bot:
         self.library = data["library"]
         self.monthly_upvotes = ["monthly_upvotes"]
         self.total_upvotes = int(data["total_upvotes"])
-        self.support_server = data["support_server"]
         self.website = data["website"]
         self.github = data["github"]
         self.short_description = data["short_description"]
